@@ -1,36 +1,31 @@
-# Dependencies
+# ==================== 依赖 ====================
 node_modules/
-
-# Lock files (keep pnpm-lock.yaml)
+pnpm-lock.yaml
 package-lock.json
 
-# Logs
+# ==================== 日志 ====================
 logs/
 *.log
-npm-debug.log*
 
-# Environment variables
+# ==================== 环境变量 ====================
 .env
 .env.local
-.env.production
+.env.*.local
 
-# IDE
-.idea/
-.vscode/
+# ==================== 构建产物 ====================
+public/dist/
+
+# ==================== 操作系统 ====================
+.DS_Store
+Thumbs.db
 *.swp
 *.swo
 
-# OS files
-.DS_Store
-Thumbs.db
+# ==================== 编辑器 ====================
+.vscode/
+.idea/
+*.sublime-*
 
-# Build outputs
-dist/
-build/
-
-# Temporary files
-tmp/
-temp/
-
-# Coze internal
-.cozeproj/
+# ==================== 临时文件 ====================
+*.tmp
+.cache/
