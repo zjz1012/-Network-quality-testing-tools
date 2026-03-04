@@ -1067,11 +1067,105 @@
       }).join('');
     }
 
+    // 客户端网站访问检测
+    async function testWebsiteAccess() {
+      const websites = [
+        { name: '百度', url: 'https://www.baidu.com', favicon: 'https://www.baidu.com/favicon.ico', type: '国内' },
+        { name: '淘宝', url: 'https://www.taobao.com', favicon: 'https://www.taobao.com/favicon.ico', type: '国内' },
+        { name: '京东', url: 'https://www.jd.com', favicon: 'https://www.jd.com/favicon.ico', type: '国内' },
+        { name: '谷歌', url: 'https://www.google.com', favicon: 'https://www.google.com/favicon.ico', type: '国际' },
+        { name: 'YouTube', url: 'https://www.youtube.com', favicon: 'https://www.youtube.com/favicon.ico', type: '国际' },
+        { name: 'GitHub', url: 'https://github.com', favicon: 'https://github.com/favicon.ico', type: '国际' },
+        { name: 'Twitter', url: 'https://twitter.com', favicon: 'https://twitter.com/favicon.ico', type: '国际' },
+        { name: '维基百科', url: 'https://www.wikipedia.org', favicon: 'https://www.wikipedia.org/favicon.ico', type: '国际' }
+      ];
+
+      const results = [];
+
+      // 并行检测所有网站
+      const testPromises = websites.map(async (site) => {
+        const startTime = Date.now();
+        try {
+          // 方法1: 尝试加载 favicon
+          const accessible = await new Promise((resolve) => {
+            const img = new Image();
+            const timeout = setTimeout(() => {
+              img.src = '';  // 取消加载
+              resolve(false);
+            }, 5000);
+
+            img.onload = () => {
+              clearTimeout(timeout);
+              resolve(true);
+            };
+
+            img.onerror = () => {
+              clearTimeout(timeout);
+              // 图片加载失败不代表网站不可访问，可能是没有 favicon
+              // 再尝试 fetch
+              resolve(null);
+            };
+
+            img.src = site.favicon + '?t=' + Date.now();  // 添加时间戳避免缓存
+          });
+
+          // 如果 favicon 测试结果不确定，使用 fetch 测试
+          if (accessible === null) {
+            try {
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 5000);
+              
+              await fetch(site.url, {
+                method: 'HEAD',
+                mode: 'no-cors',
+                signal: controller.signal
+              });
+              
+              clearTimeout(timeoutId);
+              const endTime = Date.now();
+              
+              // no-cors 模式下，如果请求完成则表示可以连接
+              return {
+                ...site,
+                status: '可访问',
+                delay: (endTime - startTime).toFixed(0)
+              };
+            } catch {
+              return {
+                ...site,
+                status: '不可访问',
+                delay: '超时'
+              };
+            }
+          }
+
+          const endTime = Date.now();
+          return {
+            ...site,
+            status: accessible ? '可访问' : '不可访问',
+            delay: accessible ? (endTime - startTime).toFixed(0) : '超时'
+          };
+        } catch (error) {
+          return {
+            ...site,
+            status: '不可访问',
+            delay: '超时'
+          };
+        }
+      });
+
+      return Promise.all(testPromises);
+    }
+
     async function renderWebsites() {
       const websiteInfo = document.getElementById('websiteInfo');
+      
+      // 显示检测中的状态
+      websiteInfo.innerHTML = '<div class="card"><p style="text-align:center;color:var(--text-muted);padding:20px">正在检测网站访问情况...</p></div>';
+
       try {
-        const response = await fetch('/test-websites');
-        const websites = await response.json();
+        // 客户端检测
+        const websites = await testWebsiteAccess();
 
         websiteInfo.innerHTML = websites.map((site, idx) => {
           const statusClass = site.status === '可访问' ? 'status-good' : 'status-bad';
