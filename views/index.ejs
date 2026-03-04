@@ -285,6 +285,11 @@
         <h2>🌍 国际互连</h2>
         <div class="grid" id="globalInfo"></div>
       </div>
+      
+      <div class="section">
+        <h2>🔗 常用网站访问检测</h2>
+        <div class="grid" id="websiteInfo"></div>
+      </div>
     </div>
   </div>
   
@@ -505,6 +510,33 @@
             </div>
           `;
         }).join('');
+        
+        // 获取并填充网站访问检测结果
+        loadingText.textContent = '正在测试常用网站访问情况...';
+        const websiteInfo = document.getElementById('websiteInfo');
+        
+        try {
+          const websiteResponse = await fetch('/test-websites');
+          const websiteResults = await websiteResponse.json();
+          
+          websiteInfo.innerHTML = websiteResults.map(site => {
+            const statusClass = site.status === '可访问' ? 'latency-good' : 'latency-bad';
+            const typeIcon = site.type === '国内' ? '🇨🇳' : '🌍';
+            const delayValue = site.delay === '超时' ? null : parseFloat(site.delay);
+            
+            return `
+              <div class="card">
+                <h3>${typeIcon} ${site.name}</h3>
+                <p><strong>状态:</strong> <span class="${statusClass}">${site.status}</span></p>
+                <p><strong>延迟:</strong> ${delayValue ? `<span class="${getLatencyClass(delayValue)}">${site.delay}ms</span>` : site.delay}</p>
+                <p><strong>类型:</strong> ${site.type}</p>
+                <p style="font-size: 12px; color: #888; word-break: break-all;"><a href="${site.url}" target="_blank" style="color: #667eea;">${site.url}</a></p>
+              </div>
+            `;
+          }).join('');
+        } catch (webErr) {
+          websiteInfo.innerHTML = '<p style="color: #888;">网站访问检测失败</p>';
+        }
         
         result.style.display = 'block';
       } catch (err) {
