@@ -118,7 +118,6 @@ async function getLocalInfo() {
     const interfaceList = interfaces ? interfaces.split('\n').filter(i => i && i !== 'lo').join(', ') : '未知';
     
     return {
-      natType: '需客户端检测',  // NAT 类型需要客户端通过 STUN 检测
       tcpCongestion: tcpCongestion,
       queueDiscipline: queueDiscipline,
       tcpReceiveBuffer: tcpRmem,

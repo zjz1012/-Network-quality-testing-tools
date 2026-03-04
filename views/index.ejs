@@ -772,6 +772,107 @@
       }
     }
 
+    // NAT 类型检测（使用 WebRTC STUN）
+    async function detectNATType() {
+      const stunServers = [
+        'stun:stun.l.google.com:19302',
+        'stun:stun1.l.google.com:19302',
+        'stun:stun2.l.google.com:19302'
+      ];
+
+      return new Promise((resolve) => {
+        let natType = '检测失败';
+        let localIPs = new Set();
+        let publicIPs = new Set();
+
+        try {
+          const pc = new RTCPeerConnection({
+            iceServers: [{ urls: stunServers }]
+          });
+
+          pc.createDataChannel('');
+
+          pc.onicecandidate = (event) => {
+            if (event.candidate) {
+              const candidate = event.candidate.candidate;
+              
+              // 提取本地 IP
+              const localMatch = candidate.match(/(\d+\.\d+\.\d+\.\d+)/g);
+              if (localMatch) {
+                localIPs.add(localMatch[0]);
+              }
+
+              // 判断候选类型
+              if (candidate.includes('typ host')) {
+                // 本地主机地址
+              } else if (candidate.includes('typ srflx')) {
+                // 服务器反射地址 - 表示有 NAT
+                const ipMatch = candidate.match(/(\d+\.\d+\.\d+\.\d+)/g);
+                if (ipMatch && ipMatch.length >= 2) {
+                  publicIPs.add(ipMatch[ipMatch.length - 1]);
+                }
+              } else if (candidate.includes('typ prflx')) {
+                // 对等反射地址
+              } else if (candidate.includes('typ relay')) {
+                // 中继地址
+              }
+            }
+          };
+
+          pc.onicegatheringstatechange = () => {
+            if (pc.iceGatheringState === 'complete') {
+              // 分析 NAT 类型
+              const candidates = pc.localDescription ? pc.localDescription.sdp : '';
+              
+              if (candidates.includes('typ relay')) {
+                natType = '对称型 NAT (Symmetric)';
+              } else if (candidates.includes('typ prflx')) {
+                natType = '端口受限锥形 NAT (Port Restricted)';
+              } else if (candidates.includes('typ srflx')) {
+                // 检查是否多个 srflx 候选
+                const srflxMatches = candidates.match(/typ srflx/g) || [];
+                if (srflxMatches.length > 1) {
+                  natType = '受限锥形 NAT (Restricted)';
+                } else {
+                  natType = '完全锥形 NAT (Full Cone)';
+                }
+              } else {
+                natType = '无 NAT (直接连接)';
+              }
+
+              pc.close();
+              resolve(natType);
+            }
+          };
+
+          pc.createOffer()
+            .then(offer => pc.setLocalDescription(offer))
+            .catch(() => {
+              pc.close();
+              resolve('检测失败');
+            });
+
+          // 超时处理
+          setTimeout(() => {
+            if (pc.iceGatheringState !== 'complete') {
+              pc.close();
+              // 如果有 srflx 候选，说明有 NAT
+              if (publicIPs.size > 0) {
+                resolve('有 NAT (类型未知)');
+              } else if (localIPs.size > 0) {
+                resolve('无 NAT 或检测超时');
+              } else {
+                resolve('检测超时');
+              }
+            }
+          }, 5000);
+
+        } catch (e) {
+          resolve('不支持 WebRTC');
+        }
+      });
+    }
+
     // 主检测流程
     document.getElementById('checkBtn').addEventListener('click', async function() {
       const btn = this;
@@ -787,6 +888,7 @@
 
       const steps = [
         '正在获取客户端 IP 地址...',
+        '正在检测 NAT 类型...',
         '正在测试客户端下载速度...',
         '正在测试客户端延迟...',
         '正在检测三网延迟（可能需要较长时间）...',
@@ -798,16 +900,20 @@
         loadingText.textContent = steps[0];
         const clientIP = await getClientIP();
 
-        // Step 2: 测试速度
+        // Step 1.5: 检测 NAT 类型
         loadingText.textContent = steps[1];
+        const natType = await detectNATType();
+
+        // Step 2: 测试速度
+        loadingText.textContent = steps[2];
         const downloadSpeed = await testDownloadSpeed();
 
         // Step 3: 测试延迟
-        loadingText.textContent = steps[2];
+        loadingText.textContent = steps[3];
         const ping = await testPing();
 
         // Step 4: 获取服务器端信息
-        loadingText.textContent = steps[3];
+        loadingText.textContent = steps[4];
         const response = await fetch('/check', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -818,10 +924,10 @@
         const data = await response.json();
 
         // 渲染结果
-        renderResults(data, downloadSpeed, ping);
+        renderResults(data, downloadSpeed, ping, natType);
 
         // Step 5: 网站检测
-        loadingText.textContent = steps[4];
+        loadingText.textContent = steps[5];
         await renderWebsites();
 
         results.classList.add('active');
@@ -835,7 +941,7 @@
       }
     });
 
-    function renderResults(data, downloadSpeed, ping) {
+    function renderResults(data, downloadSpeed, ping, natType) {
       // 基本信息
       document.getElementById('ip').textContent = data.ip || '未知';
       document.getElementById('timestamp').textContent = new Date(data.timestamp).toLocaleString();
@@ -843,7 +949,7 @@
       // 本地状态
       const localInfo = document.getElementById('localInfo');
       localInfo.innerHTML = `
-        <div class="info-item"><span class="info-label">NAT 类型</span><span class="info-value">${data.local.natType || '未知'}</span></div>
+        <div class="info-item"><span class="info-label">NAT 类型</span><span class="info-value">${natType || '检测失败'}</span></div>
         <div class="info-item"><span class="info-label">TCP 拥塞控制</span><span class="info-value"><code>${data.local.tcpCongestion || '未知'}</code></span></div>
         <div class="info-item"><span class="info-label">队列调度</span><span class="info-value"><code>${data.local.queueDiscipline || '未知'}</code></span></div>
         <div class="info-item"><span class="info-label">TCP 接收缓冲区</span><span class="info-value"><code>${data.local.tcpReceiveBuffer || '未知'}</code></span></div>
