@@ -2,7 +2,7 @@ const express = require('express');
 const { exec } = require('child_process');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 5000;
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
