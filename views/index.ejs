@@ -12,146 +12,277 @@
     }
     
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #333;
       line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px 0;
     }
     
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 0 20px;
     }
     
     h1 {
       text-align: center;
       margin-bottom: 30px;
-      color: #2c3e50;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      font-size: 2.5em;
     }
     
     .btn {
       display: block;
-      width: 200px;
+      width: 240px;
       margin: 0 auto 30px;
-      padding: 12px;
-      background-color: #3498db;
-      color: white;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+      color: #667eea;
       border: none;
-      border-radius: 5px;
-      font-size: 16px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
     
-    .btn:hover {
-      background-color: #2980b9;
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
     
     .btn:disabled {
-      background-color: #bdc3c7;
+      background: #ccc;
       cursor: not-allowed;
+      transform: none;
     }
     
     .loading {
       text-align: center;
       margin: 20px 0;
       font-size: 18px;
-      color: #7f8c8d;
+      color: #fff;
+      background: rgba(255,255,255,0.2);
+      padding: 15px;
+      border-radius: 10px;
+    }
+    
+    .loading .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
     
     .result {
       background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      margin-top: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      margin-top: 20px;
     }
     
     .section {
-      margin-bottom: 20px;
-      padding: 15px;
-      border-left: 4px solid #3498db;
-      background-color: #f9f9f9;
-      border-radius: 0 5px 5px 0;
+      margin-bottom: 25px;
+      padding: 20px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+      border-radius: 12px;
+      border-left: 5px solid #667eea;
     }
     
     .section h2 {
-      margin-bottom: 10px;
-      color: #2c3e50;
-      font-size: 18px;
+      margin-bottom: 15px;
+      color: #667eea;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .section h2::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #667eea;
+      border-radius: 50%;
+      margin-right: 10px;
     }
     
     .section p {
-      margin-bottom: 5px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    
+    .section p strong {
+      color: #555;
+      min-width: 140px;
+      display: inline-block;
     }
     
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 15px;
-      margin-top: 10px;
+      margin-top: 15px;
     }
     
     .card {
-      background-color: white;
-      padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     }
     
     .card h3 {
-      margin-bottom: 5px;
-      font-size: 14px;
-      color: #34495e;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #667eea;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 8px;
     }
     
     .card p {
       font-size: 14px;
+      margin-bottom: 5px;
     }
     
+    .card .latency-good { color: #28a745; font-weight: bold; }
+    .card .latency-medium { color: #ffc107; font-weight: bold; }
+    .card .latency-bad { color: #dc3545; font-weight: bold; }
+    
     .error {
-      color: #e74c3c;
+      color: #fff;
       text-align: center;
       margin: 20px 0;
+      background: rgba(220, 53, 69, 0.9);
+      padding: 15px;
+      border-radius: 10px;
+    }
+    
+    .info-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #667eea;
+      color: white;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-left: 5px;
+    }
+    
+    .as-path {
+      font-family: monospace;
+      background: #f5f5f5;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      word-break: break-all;
+      margin-top: 5px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    
+    .stat-item .value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    .stat-item .label {
+      font-size: 12px;
+      color: #888;
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    
+    .progress-bar .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+    
+    @media (max-width: 768px) {
+      h1 { font-size: 1.8em; }
+      .grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>网络质量检测工具</h1>
+    <h1>🌐 网络质量检测工具</h1>
     <button class="btn" id="checkBtn">开始检测</button>
-    <div class="loading" id="loading" style="display: none;">检测中，请稍候...</div>
+    <div class="loading" id="loading" style="display: none;">
+      <span class="spinner"></span>
+      <span id="loadingText">检测中，请稍候...</span>
+    </div>
     <div class="error" id="error" style="display: none;"></div>
     <div class="result" id="result" style="display: none;">
       <div class="section">
-        <h2>基本信息</h2>
+        <h2>📋 基本信息</h2>
         <p><strong>IP 地址:</strong> <span id="ip"></span></p>
         <p><strong>检测时间:</strong> <span id="timestamp"></span></p>
       </div>
       
       <div class="section">
-        <h2>本地状态</h2>
+        <h2>💻 本地状态</h2>
         <div id="localInfo"></div>
       </div>
       
       <div class="section">
-        <h2>三网延迟</h2>
+        <h2>📡 三网延迟</h2>
         <div class="grid" id="delayInfo"></div>
       </div>
       
       <div class="section">
-        <h2>三网回程路由</h2>
+        <h2>🔀 三网回程路由</h2>
         <div class="grid" id="routeInfo"></div>
       </div>
       
       <div class="section">
-        <h2>国内测速</h2>
+        <h2>⚡ 客户端测速</h2>
         <div class="grid" id="speedtestInfo"></div>
       </div>
       
       <div class="section">
-        <h2>国际互连</h2>
+        <h2>🌍 国际互连</h2>
         <div class="grid" id="globalInfo"></div>
       </div>
     </div>
@@ -190,75 +321,13 @@
       const startTime = Date.now();
       
       try {
-        await fetch('/');
+        await fetch('/health');
         const endTime = Date.now();
         return (endTime - startTime).toFixed(2);
       } catch (error) {
         console.error('延迟测试失败:', error);
         return '未知';
       }
-    }
-    
-    // 测试网页访问情况（客户端）
-    async function testWebsiteAccess() {
-      const websites = [
-        { name: '百度', url: 'https://www.baidu.com', type: '国内' },
-        { name: '淘宝', url: 'https://www.taobao.com', type: '国内' },
-        { name: '京东', url: 'https://www.jd.com', type: '国内' },
-        { name: '谷歌', url: 'https://www.google.com', type: '国际' },
-        { name: 'YouTube', url: 'https://www.youtube.com', type: '国际' },
-        { name: 'Facebook', url: 'https://www.facebook.com', type: '国际' }
-      ];
-      
-      const results = [];
-      
-      for (const website of websites) {
-        try {
-          // 使用 Image 对象测试网站可访问性，避免跨域限制
-          const startTime = Date.now();
-          const result = await new Promise((resolve) => {
-            const img = new Image();
-            const timeout = setTimeout(() => {
-              resolve({ status: '不可访问', delay: '超时' });
-            }, 10000); // 10秒超时
-            
-            img.onload = () => {
-              clearTimeout(timeout);
-              const endTime = Date.now();
-              resolve({ status: '可访问', delay: (endTime - startTime).toFixed(2) });
-            };
-            
-            img.onerror = () => {
-              clearTimeout(timeout);
-              const endTime = Date.now();
-              // 即使图片加载失败，也可能是网站可访问但没有图片，所以标记为可访问
-              resolve({ status: '可访问', delay: (endTime - startTime).toFixed(2) });
-            };
-            
-            // 添加随机参数避免缓存
-            const randomParam = '?t=' + Math.random();
-            img.src = website.url + randomParam;
-          });
-          
-          results.push({
-            name: website.name,
-            url: website.url,
-            type: website.type,
-            status: result.status,
-            delay: result.delay
-          });
-        } catch (error) {
-          results.push({
-            name: website.name,
-            url: website.url,
-            type: website.type,
-            status: '不可访问',
-            delay: '未知'
-          });
-        }
-      }
-      
-      return results;
     }
     
     // 获取客户端公网 IP
@@ -273,9 +342,26 @@
       }
     }
     
+    // 获取延迟等级样式
+    function getLatencyClass(latency) {
+      const val = parseFloat(latency);
+      if (isNaN(val)) return '';
+      if (val < 50) return 'latency-good';
+      if (val < 100) return 'latency-medium';
+      return 'latency-bad';
+    }
+    
+    // 渲染延迟数据
+    function renderLatency(data) {
+      if (!data) return '<span class="latency-bad">超时</span>';
+      const cls = getLatencyClass(data.avg);
+      return `<span class="${cls}">${data.avg}ms</span> <small>(min: ${data.min}ms, max: ${data.max}ms)</small>`;
+    }
+    
     document.getElementById('checkBtn').addEventListener('click', async function() {
       const btn = this;
       const loading = document.getElementById('loading');
+      const loadingText = document.getElementById('loadingText');
       const error = document.getElementById('error');
       const result = document.getElementById('result');
       
@@ -286,18 +372,18 @@
       
       try {
         // 1. 获取客户端公网 IP
-        loading.textContent = '正在获取客户端 IP 地址...';
+        loadingText.textContent = '正在获取客户端 IP 地址...';
         const clientIP = await getClientIP();
         
         // 2. 执行客户端速度测试
-        loading.textContent = '正在测试客户端下载速度...';
+        loadingText.textContent = '正在测试客户端下载速度...';
         const downloadSpeed = await testDownloadSpeed();
         
-        loading.textContent = '正在测试客户端延迟...';
+        loadingText.textContent = '正在测试客户端延迟...';
         const ping = await testPing();
         
         // 3. 获取服务器端信息
-        loading.textContent = '正在获取网络信息...';
+        loadingText.textContent = '正在获取网络信息（三网延迟测试中，可能需要较长时间）...';
         const response = await fetch('/check', {
           method: 'POST',
           headers: {
@@ -312,10 +398,6 @@
         
         const data = await response.json();
         
-        // 4. 测试网页访问情况
-        loading.textContent = '正在测试常用网页访问情况...';
-        const websiteResults = await testWebsiteAccess();
-        
         // 显示结果
         document.getElementById('ip').textContent = clientIP;
         document.getElementById('timestamp').textContent = new Date(data.timestamp).toLocaleString();
@@ -326,132 +408,103 @@
           <p><strong>NAT 类型:</strong> ${data.local.natType || '未知'}</p>
           <p><strong>TCP 拥塞控制:</strong> ${data.local.tcpCongestion || '未知'}</p>
           <p><strong>队列调度算法:</strong> ${data.local.queueDiscipline || '未知'}</p>
-          <p><strong>TCP 接收缓冲区:</strong> ${data.local.tcpReceiveBuffer || '未知'}</p>
-          <p><strong>TCP 发送缓冲区:</strong> ${data.local.tcpSendBuffer || '未知'}</p>
+          <p><strong>TCP 接收缓冲区:</strong> <code>${data.local.tcpReceiveBuffer || '未知'}</code></p>
+          <p><strong>TCP 发送缓冲区:</strong> <code>${data.local.tcpSendBuffer || '未知'}</code></p>
+          <p><strong>默认路由:</strong> <code>${data.local.defaultRoute || '未知'}</code></p>
+          <p><strong>DNS 服务器:</strong> <code>${data.local.dnsServers || '未知'}</code></p>
+          <p><strong>网络接口:</strong> ${data.local.interfaces || '未知'}</p>
         `;
         
         // 填充三网延迟
         const delayInfo = document.getElementById('delayInfo');
-        delayInfo.innerHTML = `
-          <div class="card">
-            <h3>电信</h3>
-            <p>北京: ${data.delay.telecom?.beijing || '未知'}ms</p>
-            <p>上海: ${data.delay.telecom?.shanghai || '未知'}ms</p>
-            <p>广州: ${data.delay.telecom?.guangzhou || '未知'}ms</p>
-          </div>
-          <div class="card">
-            <h3>联通</h3>
-            <p>北京: ${data.delay.unicom?.beijing || '未知'}ms</p>
-            <p>上海: ${data.delay.unicom?.shanghai || '未知'}ms</p>
-            <p>广州: ${data.delay.unicom?.guangzhou || '未知'}ms</p>
-          </div>
-          <div class="card">
-            <h3>移动</h3>
-            <p>北京: ${data.delay.mobile?.beijing || '未知'}ms</p>
-            <p>上海: ${data.delay.mobile?.shanghai || '未知'}ms</p>
-            <p>广州: ${data.delay.mobile?.guangzhou || '未知'}ms</p>
-          </div>
-        `;
+        const isps = [
+          { key: 'telecom', name: '电信', icon: '📱' },
+          { key: 'unicom', name: '联通', icon: '📶' },
+          { key: 'mobile', name: '移动', icon: '📲' }
+        ];
         
-        // AS 号码到运营商名称的映射
-    const asMap = {
-      'AS4134': '中国电信',
-      'AS4837': '中国联通',
-      'AS9808': '中国移动',
-      'AS10099': '中国联通',
-      'AS9929': '中国电信',
-      'AS4809': '中国电信 CN2',
-      'AS23764': '中国电信 CTGNet',
-      'AS58453': '中国移动 CMI',
-      'AS58807': '中国移动 CMIN2',
-      'AS4538': '中国教育网 CERNET',
-      'AS7497': '中国科技网 CSTNET'
-    };
-    
-    // 转换 AS 路径为文字描述
-    function convertASPath(path) {
-      if (!path || path === '未知') return '未知';
-      
-      const asList = path.split(' -> ');
-      return asList.map(as => asMap[as] || as).join(' -> ');
-    }
-    
-    // 填充回程路由
+        delayInfo.innerHTML = isps.map(isp => `
+          <div class="card">
+            <h3>${isp.icon} ${isp.name}</h3>
+            <p><strong>北京:</strong> ${renderLatency(data.delay[isp.key]?.beijing)}</p>
+            <p><strong>上海:</strong> ${renderLatency(data.delay[isp.key]?.shanghai)}</p>
+            <p><strong>广州:</strong> ${renderLatency(data.delay[isp.key]?.guangzhou)}</p>
+          </div>
+        `).join('');
+        
+        // 填充回程路由
         const routeInfo = document.getElementById('routeInfo');
-        routeInfo.innerHTML = `
-          <div class="card">
-            <h3>电信</h3>
-            <p>北京: ${convertASPath(data.route.telecom?.beijing)}</p>
-            <p>上海: ${convertASPath(data.route.telecom?.shanghai)}</p>
-            <p>广州: ${convertASPath(data.route.telecom?.guangzhou)}</p>
-          </div>
-          <div class="card">
-            <h3>联通</h3>
-            <p>北京: ${convertASPath(data.route.unicom?.beijing)}</p>
-            <p>上海: ${convertASPath(data.route.unicom?.shanghai)}</p>
-            <p>广州: ${convertASPath(data.route.unicom?.guangzhou)}</p>
-          </div>
-          <div class="card">
-            <h3>移动</h3>
-            <p>北京: ${convertASPath(data.route.mobile?.beijing)}</p>
-            <p>上海: ${convertASPath(data.route.mobile?.shanghai)}</p>
-            <p>广州: ${convertASPath(data.route.mobile?.guangzhou)}</p>
-          </div>
-        `;
+        routeInfo.innerHTML = isps.map(isp => {
+          const route = data.route[isp.key];
+          return `
+            <div class="card">
+              <h3>${isp.icon} ${isp.name}</h3>
+              <p><strong>北京:</strong></p>
+              <div class="as-path">${route?.beijing?.asPath || '无法获取'}</div>
+              ${route?.beijing?.avgLatency ? `<p style="margin-top:5px;">延迟: <span class="${getLatencyClass(route.beijing.avgLatency)}">${route.beijing.avgLatency}ms</span></p>` : ''}
+              ${route?.beijing?.asn ? `<small style="color:#888">${route.beijing.asn} - ${route.beijing.isp || ''}</small>` : ''}
+              
+              <p style="margin-top:10px;"><strong>上海:</strong></p>
+              <div class="as-path">${route?.shanghai?.asPath || '无法获取'}</div>
+              ${route?.shanghai?.avgLatency ? `<p style="margin-top:5px;">延迟: <span class="${getLatencyClass(route.shanghai.avgLatency)}">${route.shanghai.avgLatency}ms</span></p>` : ''}
+              
+              <p style="margin-top:10px;"><strong>广州:</strong></p>
+              <div class="as-path">${route?.guangzhou?.asPath || '无法获取'}</div>
+              ${route?.guangzhou?.avgLatency ? `<p style="margin-top:5px;">延迟: <span class="${getLatencyClass(route.guangzhou.avgLatency)}">${route.guangzhou.avgLatency}ms</span></p>` : ''}
+            </div>
+          `;
+        }).join('');
         
-        // 填充国内测速（客户端速度）
+        // 填充客户端测速
         const speedtestInfo = document.getElementById('speedtestInfo');
+        const speedVal = parseFloat(downloadSpeed);
+        const speedClass = isNaN(speedVal) ? '' : (speedVal > 50 ? 'latency-good' : speedVal > 20 ? 'latency-medium' : 'latency-bad');
+        
         speedtestInfo.innerHTML = `
           <div class="card">
-            <h3>客户端速度</h3>
-            <p>下载速度: ${downloadSpeed} Mbps</p>
-            <p>延迟: ${ping} ms</p>
-            <p>测试时间: ${new Date().toLocaleTimeString()}</p>
+            <h3>📥 下载速度</h3>
+            <p class="${speedClass}" style="font-size: 28px; font-weight: bold;">${downloadSpeed} Mbps</p>
+            <div class="progress-bar">
+              <div class="fill" style="width: ${Math.min(100, (speedVal / 100) * 100)}%"></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>⏱️ 客户端延迟</h3>
+            <p class="${getLatencyClass(ping)}" style="font-size: 28px; font-weight: bold;">${ping} ms</p>
+            <p style="color: #888; margin-top: 10px;">测试时间: ${new Date().toLocaleTimeString()}</p>
           </div>
         `;
         
         // 填充国际互连
         const globalInfo = document.getElementById('globalInfo');
-        globalInfo.innerHTML = `
-          <div class="card">
-            <h3>北美</h3>
-            <p>上传: ${data.global.northAmerica?.upload || '未知'} Mbps</p>
-            <p>下载: ${data.global.northAmerica?.download || '未知'} Mbps</p>
-            <p>延迟: ${data.global.northAmerica?.ping || '未知'} ms</p>
-          </div>
-          <div class="card">
-            <h3>欧洲</h3>
-            <p>上传: ${data.global.europe?.upload || '未知'} Mbps</p>
-            <p>下载: ${data.global.europe?.download || '未知'} Mbps</p>
-            <p>延迟: ${data.global.europe?.ping || '未知'} ms</p>
-          </div>
-          <div class="card">
-            <h3>亚洲</h3>
-            <p>上传: ${data.global.asia?.upload || '未知'} Mbps</p>
-            <p>下载: ${data.global.asia?.download || '未知'} Mbps</p>
-            <p>延迟: ${data.global.asia?.ping || '未知'} ms</p>
-          </div>
-        `;
+        const regions = [
+          { key: 'northAmerica', name: '北美', icon: '🇺🇸' },
+          { key: 'europe', name: '欧洲', icon: '🇪🇺' },
+          { key: 'asia', name: '亚洲', icon: '🌏' }
+        ];
         
-        // 填充网页访问检测结果
-        const websiteInfo = document.createElement('div');
-        websiteInfo.className = 'section';
-        websiteInfo.innerHTML = `
-          <h2>常用网页访问检测</h2>
-          <div class="grid">
-            ${websiteResults.map(website => `
-              <div class="card">
-                <h3>${website.name} (${website.type})</h3>
-                <p>状态: ${website.status}</p>
-                <p>延迟: ${website.delay} ms</p>
-                <p>URL: <a href="${website.url}" target="_blank">${website.url}</a></p>
-              </div>
-            `).join('')}
-          </div>
-        `;
-        
-        // 将网页访问检测结果添加到结果容器中
-        result.appendChild(websiteInfo);
+        globalInfo.innerHTML = regions.map(region => {
+          const info = data.global[region.key];
+          const avgLatency = info?.avgLatency;
+          return `
+            <div class="card">
+              <h3>${region.icon} ${region.name}</h3>
+              <p><strong>平均延迟:</strong> ${avgLatency ? `<span class="${getLatencyClass(avgLatency)}">${avgLatency}ms</span>` : '超时'}</p>
+              ${info?.minLatency && info?.maxLatency ? `<p><strong>延迟范围:</strong> ${info.minLatency}ms - ${info.maxLatency}ms</p>` : ''}
+              <p><strong>可达节点:</strong> ${info?.reachable || 0} / ${info?.total || 0}</p>
+              ${info?.nodes && info.nodes.length > 0 ? `
+                <details style="margin-top: 10px;">
+                  <summary style="cursor: pointer; color: #667eea;">查看详细节点</summary>
+                  ${info.nodes.map(node => `
+                    <p style="margin: 5px 0; font-size: 12px; color: #666;">
+                      ${node.name}: <span class="${getLatencyClass(node.avg)}">${node.avg.toFixed(1)}ms</span>
+                    </p>
+                  `).join('')}
+                </details>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
         
         result.style.display = 'block';
       } catch (err) {
