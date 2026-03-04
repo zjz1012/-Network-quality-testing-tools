@@ -1207,54 +1207,6 @@
       color: var(--text-muted);
     }
 
-    /* 饼图容器 */
-    .pie-chart-container {
-      display: flex;
-      align-items: center;
-      gap: 30px;
-      flex-wrap: wrap;
-    }
-
-    .pie-chart-canvas {
-      width: 180px;
-      height: 180px;
-      min-width: 180px;
-    }
-
-    .pie-chart-legend {
-      flex: 1;
-      min-width: 150px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .legend-item:last-child {
-      border-bottom: none;
-    }
-
-    .legend-color {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
-    }
-
-    .legend-label {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    .legend-value {
-      margin-left: auto;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
     /* 响应式调整 */
     @media (max-width: 768px) {
       .charts-grid {
@@ -1272,16 +1224,6 @@
       
       .speedometer-number {
         font-size: 1.5rem;
-      }
-      
-      .pie-chart-container {
-        flex-direction: column;
-      }
-      
-      .pie-chart-canvas {
-        width: 150px;
-        height: 150px;
-        min-width: 150px;
       }
       
       .latency-live-stats {
@@ -1451,14 +1393,6 @@
           <h2 class="section-title">常用网站访问检测</h2>
         </div>
         <div class="cards-grid" id="websiteInfo"></div>
-        <!-- 网站访问饼图 -->
-        <div class="chart-container" id="websiteChartContainer" style="display: none;">
-          <div class="chart-title"><span class="chart-title-icon">🎯</span>访问状态分布</div>
-          <div class="pie-chart-container">
-            <canvas id="websitePieChart" class="pie-chart-canvas"></canvas>
-            <div class="pie-chart-legend" id="websiteLegend"></div>
-          </div>
-        </div>
       </div>
 
       <!-- 历史趋势 -->
@@ -1940,7 +1874,6 @@
     let charts = {
       dns: null,
       latencyLive: null,
-      websitePie: null,
       history: null
     };
 
@@ -2150,103 +2083,6 @@
           }
         }
       });
-    }
-
-    // ==================== 网站访问饼图 ====================
-    function renderWebsitePieChart(websites) {
-      const ctx = document.getElementById('websitePieChart');
-      const container = document.getElementById('websiteChartContainer');
-      const legendContainer = document.getElementById('websiteLegend');
-      
-      if (!ctx || !container) return;
-      
-      // 统计数据
-      let accessible = 0;
-      let timeout = 0;
-      let domestic = 0;
-      let international = 0;
-      
-      websites.forEach(site => {
-        if (site.status === '可访问') {
-          accessible++;
-          if (site.type === '国内') domestic++;
-          else international++;
-        } else {
-          timeout++;
-        }
-      });
-      
-      // 如果没有数据，隐藏图表
-      if (accessible === 0 && timeout === 0) {
-        container.style.display = 'none';
-        return;
-      }
-      
-      container.style.display = 'block';
-      
-      if (charts.websitePie) {
-        charts.websitePie.destroy();
-      }
-      
-      charts.websitePie = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['可访问', '超时'],
-          datasets: [{
-            data: [accessible, timeout],
-            backgroundColor: ['#10b981', '#ef4444'],
-            borderColor: ['#10b981', '#ef4444'],
-            borderWidth: 0,
-            hoverOffset: 8
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '65%',
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                  const percentage = ((context.raw / total) * 100).toFixed(1);
-                  return context.label + ': ' + context.raw + ' (' + percentage + '%)';
-                }
-              }
-            }
-          }
-        }
-      });
-      
-      // 渲染自定义图例
-      if (legendContainer) {
-        const total = accessible + timeout;
-        legendContainer.innerHTML = `
-          <div class="legend-item">
-            <div class="legend-color" style="background: #10b981;"></div>
-            <span class="legend-label">可访问</span>
-            <span class="legend-value">${accessible} (${((accessible/total)*100).toFixed(1)}%)</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background: #ef4444;"></div>
-            <span class="legend-label">超时</span>
-            <span class="legend-value">${timeout} (${((timeout/total)*100).toFixed(1)}%)</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background: #6366f1;"></div>
-            <span class="legend-label">国内网站</span>
-            <span class="legend-value">${domestic}</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background: #8b5cf6;"></div>
-            <span class="legend-label">国际网站</span>
-            <span class="legend-value">${international}</span>
-          </div>
-        `;
-      }
     }
 
     // ==================== 历史趋势图 ====================
@@ -2483,7 +2319,6 @@
         loadingText.textContent = steps[5];
         const websites = await testWebsiteAccess();
         renderWebsites(websites);
-        renderWebsitePieChart(websites); // 渲染网站饼图
 
         // 保存到历史记录
         const historyData = {
