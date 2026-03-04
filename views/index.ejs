@@ -1116,7 +1116,97 @@
   </div>
 
   <script>
-    // 工具函数
+    // ==================== 安全工具函数 ====================
+    
+    // XSS 防护：HTML 实体转义
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      const escapeMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '/': '&#x2F;',
+        '`': '&#x60;',
+        '=': '&#x3D;'
+      };
+      return String(str).replace(/[&<>"'`=/]/g, char => escapeMap[char]);
+    }
+
+    // 安全地设置元素内容（自动转义）
+    function safeText(element, text) {
+      if (typeof element === 'string') {
+        element = document.getElementById(element);
+      }
+      if (element) {
+        element.textContent = text !== null && text !== undefined ? String(text) : '-';
+      }
+    }
+
+    // 安全地设置元素 HTML（用于已知安全的模板）
+    function safeHtml(element, html) {
+      if (typeof element === 'string') {
+        element = document.getElementById(element);
+      }
+      if (element) {
+        element.innerHTML = html;
+      }
+    }
+
+    // URL 验证（只允许 http/https 协议）
+    function isValidUrl(url) {
+      try {
+        const parsed = new URL(url);
+        return ['http:', 'https:'].includes(parsed.protocol);
+      } catch {
+        return false;
+      }
+    }
+
+    // 数字验证和限制
+    function safeNumber(value, min, max, fallback) {
+      const num = parseFloat(value);
+      if (isNaN(num)) return fallback;
+      return Math.max(min, Math.min(max, num));
+    }
+
+    // 安全的超时时间（防止过短或过长）
+    function safeTimeout(timeout, fallback = 5000) {
+      const num = parseInt(timeout);
+      if (isNaN(num) || num < 100) return fallback;
+      if (num > 60000) return 60000; // 最大 60 秒
+      return num;
+    }
+
+    // 安全的 fetch 包装
+    async function safeFetch(url, options = {}, timeout = 10000) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), safeTimeout(timeout));
+      
+      try {
+        const response = await fetch(url, {
+          ...options,
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        return response;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          throw new Error('请求超时');
+        }
+        throw error;
+      }
+    }
+
+    // 错误日志（不暴露敏感信息）
+    function logError(context, error) {
+      const safeMessage = error?.message?.replace(/[\w.-]+@[\w.-]+/g, '[redacted]') || '未知错误';
+      console.error(`[${context}]`, safeMessage);
+    }
+
+    // ==================== 工具函数 ====================
     function getLatencyClass(latency) {
       const val = parseFloat(latency);
       if (isNaN(val)) return '';
@@ -1380,32 +1470,33 @@
     // 渲染测速结果
     function renderSpeedtest(downloadSpeed, latency) {
       const speedClass = getSpeedClass(downloadSpeed);
-      const speedVal = parseFloat(downloadSpeed) || 0;
+      const speedVal = safeNumber(downloadSpeed, 0, 10000, 0);
       const speedtestInfo = document.getElementById('speedtestInfo');
       
       const latAvg = typeof latency === 'object' ? latency.avg : latency;
       const latMin = typeof latency === 'object' ? latency.min : latency;
       const latMax = typeof latency === 'object' ? latency.max : latency;
+      const latAvgNum = safeNumber(latAvg, 0, 10000, 999);
 
       speedtestInfo.innerHTML = `
         <div class="card card-animated">
           <div class="speed-gauge">
-            <div class="speed-value ${speedClass === 'good' ? 'latency-good' : speedClass === 'medium' ? 'latency-medium' : 'latency-bad'}">${downloadSpeed}</div>
+            <div class="speed-value ${speedClass === 'good' ? 'latency-good' : speedClass === 'medium' ? 'latency-medium' : 'latency-bad'}">${escapeHtml(downloadSpeed)}</div>
             <div class="speed-unit">Mbps 下载速度</div>
             <div class="speed-bar">
-              <div class="speed-bar-fill ${speedClass}" style="width: ${Math.min(100, speedVal)}%"></div>
+              <div class="speed-bar-fill ${escapeHtml(speedClass)}" style="width: ${Math.min(100, speedVal)}%"></div>
             </div>
           </div>
         </div>
         <div class="card card-animated">
           <div class="speed-gauge">
-            <div class="speed-value ${getLatencyClass(latAvg)}">${latAvg}</div>
+            <div class="speed-value ${getLatencyClass(latAvg)}">${escapeHtml(latAvg)}</div>
             <div class="speed-unit">ms 平均延迟</div>
             <div class="speed-bar">
-              <div class="speed-bar-fill ${parseFloat(latAvg) < 50 ? 'good' : parseFloat(latAvg) < 100 ? 'medium' : 'bad'}" style="width: ${Math.max(10, 200 - parseFloat(latAvg) * 2)}%"></div>
+              <div class="speed-bar-fill ${latAvgNum < 50 ? 'good' : latAvgNum < 100 ? 'medium' : 'bad'}" style="width: ${Math.max(10, 200 - latAvgNum * 2)}%"></div>
             </div>
             <p style="margin-top:15px;color:var(--text-muted);font-size:0.85rem">
-              最小: ${latMin}ms / 最大: ${latMax}ms
+              最小: ${escapeHtml(latMin)}ms / 最大: ${escapeHtml(latMax)}ms
             </p>
           </div>
         </div>
