@@ -513,6 +513,461 @@
       }
     }
 
+    /* ==================== 移动端响应式优化 ==================== */
+    
+    /* 平板设备 */
+    @media (max-width: 1024px) {
+      .container {
+        padding: 15px;
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dns-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* 大屏手机 */
+    @media (max-width: 768px) {
+      .container {
+        padding: 12px;
+      }
+
+      .header {
+        padding: 30px 15px 20px;
+      }
+
+      .header h1 {
+        font-size: 1.6rem;
+        margin-bottom: 8px;
+      }
+
+      .header p {
+        font-size: 0.95rem;
+        padding: 0 10px;
+      }
+
+      .client-badge {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .btn-primary {
+        width: calc(100% - 24px);
+        max-width: 320px;
+        padding: 16px 24px;
+        font-size: 1.05rem;
+        border-radius: 12px;
+      }
+
+      .section {
+        padding: 16px;
+        margin-bottom: 16px;
+        border-radius: 12px;
+      }
+
+      .section-header {
+        gap: 10px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+      }
+
+      .section-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+        border-radius: 8px;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 10px;
+      }
+
+      .card-header {
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .info-item {
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .info-item:last-child {
+        border-bottom: none;
+      }
+
+      .info-label {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+      }
+
+      .info-value {
+        font-size: 0.95rem;
+      }
+
+      .speed-gauge {
+        padding: 15px 0;
+      }
+
+      .speed-value {
+        font-size: 2rem;
+      }
+
+      .speed-unit {
+        font-size: 0.9rem;
+      }
+
+      .speed-bar {
+        height: 6px;
+      }
+
+      .dns-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .dns-item {
+        padding: 10px 8px;
+      }
+
+      .dns-item .dns-name {
+        font-size: 0.75rem;
+      }
+
+      .dns-item .dns-time {
+        font-size: 1rem;
+      }
+
+      .website-card {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .website-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+      }
+
+      .website-name {
+        font-size: 0.95rem;
+      }
+
+      .website-url {
+        font-size: 0.75rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 150px;
+      }
+
+      .website-status .status {
+        font-size: 0.85rem;
+      }
+
+      .website-status .delay {
+        font-size: 0.8rem;
+      }
+
+      .footer {
+        padding: 20px 15px;
+        font-size: 0.85rem;
+      }
+
+      .loading-container {
+        padding: 20px;
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+      }
+
+      .loading-text {
+        font-size: 0.9rem;
+      }
+
+      .error-container {
+        padding: 15px;
+        margin: 15px 0;
+      }
+    }
+
+    /* 小屏手机 */
+    @media (max-width: 480px) {
+      .container {
+        padding: 8px;
+      }
+
+      .header {
+        padding: 20px 10px 15px;
+      }
+
+      .header h1 {
+        font-size: 1.4rem;
+      }
+
+      .header p {
+        font-size: 0.85rem;
+      }
+
+      .client-badge {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+        gap: 6px;
+      }
+
+      .btn-primary {
+        padding: 14px 20px;
+        font-size: 1rem;
+        gap: 8px;
+      }
+
+      .section {
+        padding: 14px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+      }
+
+      .section-header {
+        gap: 8px;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+      }
+
+      .section-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+      }
+
+      .section-title {
+        font-size: 1rem;
+      }
+
+      .card {
+        padding: 14px;
+        border-radius: 8px;
+      }
+
+      .card-header {
+        gap: 8px;
+      }
+
+      .card-icon {
+        font-size: 1.2rem;
+      }
+
+      .card-title {
+        font-size: 0.95rem;
+      }
+
+      .card-content p {
+        margin-bottom: 6px;
+      }
+
+      .card-content .label {
+        font-size: 0.8rem;
+      }
+
+      .card-content .value {
+        font-size: 0.9rem;
+      }
+
+      .speed-value {
+        font-size: 1.8rem;
+      }
+
+      .speed-unit {
+        font-size: 0.85rem;
+      }
+
+      .dns-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      .dns-item {
+        padding: 8px 6px;
+      }
+
+      .dns-item .dns-name {
+        font-size: 0.7rem;
+      }
+
+      .dns-item .dns-time {
+        font-size: 0.95rem;
+      }
+
+      .website-card {
+        padding: 10px;
+        gap: 10px;
+      }
+
+      .website-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+      }
+
+      .website-name {
+        font-size: 0.9rem;
+      }
+
+      .website-url {
+        font-size: 0.7rem;
+        max-width: 120px;
+      }
+
+      .website-status .status {
+        font-size: 0.8rem;
+      }
+
+      .website-status .delay {
+        font-size: 0.75rem;
+      }
+    }
+
+    /* iPhone X 及以上机型的安全区域适配 */
+    @supports (padding: max(0px)) {
+      .container {
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding-left: max(12px, env(safe-area-inset-left));
+          padding-right: max(12px, env(safe-area-inset-right));
+        }
+
+        .footer {
+          padding-bottom: max(20px, env(safe-area-inset-bottom));
+        }
+      }
+    }
+
+    /* 触摸设备优化 */
+    @media (hover: none) and (pointer: coarse) {
+      .card:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .card:active {
+        background: var(--bg-card-hover);
+        transform: scale(0.98);
+      }
+
+      .btn-primary:hover {
+        transform: none;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .btn-primary:active {
+        transform: scale(0.98);
+      }
+
+      .section:hover {
+        border-color: var(--border);
+        box-shadow: none;
+      }
+    }
+
+    /* 横屏模式优化 */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .header {
+        padding: 15px 20px;
+      }
+
+      .header h1 {
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+      }
+
+      .header p {
+        font-size: 0.9rem;
+      }
+
+      .client-badge {
+        margin-top: 8px;
+      }
+
+      .section {
+        padding: 14px;
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* 暗色模式下的高对比度适配 */
+    @media (prefers-contrast: high) {
+      :root {
+        --border: #475569;
+        --text-muted: #94a3b8;
+      }
+
+      .section {
+        border-width: 2px;
+      }
+
+      .card {
+        border-width: 2px;
+      }
+    }
+
+    /* 减少动画模式 */
+    @media (prefers-reduced-motion: reduce) {
+      .bg-gradient {
+        animation: none;
+      }
+
+      .card-animated {
+        animation: none;
+        opacity: 1;
+      }
+
+      .loading-spinner {
+        animation: none;
+        border-top-color: var(--primary);
+        border-right-color: var(--primary);
+      }
+
+      .loading-progress-bar {
+        animation: none;
+        width: 50%;
+      }
+
+      .speed-bar-fill {
+        transition: none;
+      }
+    }
+
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
@@ -750,9 +1205,12 @@
       });
     }
 
-    // 下载速度测试
+    // 下载速度测试 - 移动端自适应
     async function testDownloadSpeed() {
-      const size = 10;
+      // 移动端使用较小的测试文件，减少流量和时间
+      const isMobile = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const size = isMobile ? 5 : 10; // 移动端5MB，桌面端10MB
+      
       const startTime = Date.now();
       try {
         const response = await fetch(`/speedtest/${size}`, { method: 'GET', cache: 'no-cache' });
