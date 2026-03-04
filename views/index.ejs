@@ -7,8 +7,49 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Chart.js for data visualization -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Chart.js - 多CDN备用 -->
+  <script>
+    window.ChartLoaded = false;
+    function loadChartJS() {
+      // 按优先级尝试多个CDN
+      const cdns = [
+        'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+        'https://unpkg.com/chart.js@4.4.1/dist/chart.umd.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'
+      ];
+      
+      let index = 0;
+      
+      function tryLoad() {
+        if (index >= cdns.length) {
+          console.warn('所有 Chart.js CDN 加载失败，图表功能将被禁用');
+          return;
+        }
+        
+        const script = document.createElement('script');
+        script.src = cdns[index];
+        script.async = true;
+        script.onload = function() {
+          window.ChartLoaded = true;
+          console.log('Chart.js 加载成功');
+        };
+        script.onerror = function() {
+          index++;
+          tryLoad();
+        };
+        document.head.appendChild(script);
+      }
+      
+      tryLoad();
+    }
+    
+    // 页面加载后立即尝试加载 Chart.js
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadChartJS);
+    } else {
+      loadChartJS();
+    }
+  </script>
   <style>
     :root {
       --primary: #6366f1;
@@ -1921,6 +1962,12 @@
 
     // ==================== 实时延迟波动图 ====================
     function initLatencyLiveChart() {
+      // 检查 Chart.js 是否可用
+      if (typeof Chart === 'undefined') {
+        console.warn('Chart.js 未加载，跳过延迟图表初始化');
+        return;
+      }
+      
       const ctx = document.getElementById('latencyLiveChart');
       if (!ctx) return;
       
@@ -2009,6 +2056,12 @@
 
     // ==================== DNS 对比柱状图 ====================
     function renderDnsChart(results) {
+      // 检查 Chart.js 是否可用
+      if (typeof Chart === 'undefined') {
+        console.warn('Chart.js 未加载，跳过DNS图表渲染');
+        return;
+      }
+      
       const ctx = document.getElementById('dnsChart');
       const container = document.getElementById('dnsChartContainer');
       if (!ctx || !container) return;
@@ -2122,6 +2175,12 @@
     }
 
     function renderHistoryChart(range = 7) {
+      // 检查 Chart.js 是否可用
+      if (typeof Chart === 'undefined') {
+        console.warn('Chart.js 未加载，跳过历史图表渲染');
+        return;
+      }
+      
       const ctx = document.getElementById('historyChart');
       const section = document.getElementById('historySection');
       
@@ -2305,9 +2364,12 @@
         // 渲染测速结果
         renderSpeedtest(downloadSpeed, latency);
         
-        // 更新速度仪表盘和显示图表容器
-        document.getElementById('speedChartsContainer').style.display = 'grid';
-        updateSpeedometer(downloadSpeed);
+        // 更新速度仪表盘和显示图表容器（如果 Chart.js 可用）
+        const chartContainer = document.getElementById('speedChartsContainer');
+        if (chartContainer && typeof Chart !== 'undefined') {
+          chartContainer.style.display = 'grid';
+          updateSpeedometer(downloadSpeed);
+        }
 
         // Step 5: DNS 测试
         loadingText.textContent = steps[4];
